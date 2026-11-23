@@ -36,7 +36,7 @@ body {
 .ground__img {
   position: absolute;
   inset: -1%;
-  background: url('../img/bg-haze-1920.jpg') 50% 44% / cover no-repeat;
+  background: url('../img/bg-refa3i.jpg') 50% 44% / cover no-repeat;
   animation: groundDrift 90s ease-in-out infinite alternate;
 }
 
@@ -627,7 +627,7 @@ body {
 .veil__wash {
   position: absolute;
   inset: -10%;
-  background: url('../img/bg-haze-1920.jpg') 50% 40% / cover no-repeat;
+  background: url('../img/bg-refa3i.jpg') 50% 40% / cover no-repeat;
   filter: blur(calc(var(--u) * 28)) saturate(.75) brightness(.55);
   opacity: .42;
 }

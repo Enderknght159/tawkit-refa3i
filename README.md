@@ -102,6 +102,7 @@ node server.mjs 3000     # منفذ آخر
 | `assets/js/data.js` | أوقات السنة (٣٦٦ يوماً) مضمّنة |
 | `assets/fonts/` | خطّا Hacen Algeria وHD محلياً (TTF) |
 | `assets/img/` | الشعارات، خلفية ضباب الجامع، وأيقونة الموقع |
+| `assets/images/refa3i default bg.png` | ملف الخلفية الأصلي كما ورد من الجامع؛ المستخدم في الشاشة هو `assets/img/bg-refa3i.jpg` |
 | `assets/ads/` | مجلد الإعلانات و`manifest.json` وملاحظاته |
 | `docs/` | لقطتا الشاشة الأساسية وشاشة الإعلان المستخدمتان في هذا الملف |
 | `server.mjs` | خادم محلي ثابت لملفات المشروع |
