@@ -1,7 +1,8 @@
 /* ==========================================================================
    مخزن الإعلانات — IndexedDB
-   يحفظ صور الإعلانات داخل جهاز العرض، ويقرأ أيضاً قائمة اختيارية من
-   assets/ads/manifest.json لمن يفضّل نسخ الصور إلى المجلد مباشرة.
+   يحفظ صور وفيديوهات الإعلانات داخل جهاز العرض، ويقرأ أيضاً قائمة اختيارية من
+   assets/ads/manifest.json لمن يفضّل نسخ الوسائط إلى المجلد مباشرة.
+   الصور تُصغَّر وتُضغط، أما الفيديوهات فتُحفظ كما هي (بدون إعادة ترميز).
    ========================================================================== */
 
 (function () {
@@ -11,6 +12,8 @@
   const STORE = 'ads';
   const MAX_EDGE = 2400;
   const QUALITY = 0.9;
+  const MAX_VIDEO_BYTES = 320 * 1024 * 1024;
+  const VIDEO_EXT = /\.(mp4|m4v|webm|ogv|mov)$/i;
 
   let dbPromise = null;
 
@@ -104,8 +107,16 @@
     }
   }
 
+  const mediaKind = (file) => {
+    const type = (file && file.type) || '';
+    if (/^video\//.test(type)) return 'video';
+    if (/^image\//.test(type)) return 'image';
+    return VIDEO_EXT.test((file && file.name) || '') ? 'video' : 'image';
+  };
+
   async function addFiles(files) {
-    const list = Array.from(files || []).filter((f) => /^image\//.test(f.type));
+    const list = Array.from(files || []).filter((f) =>
+      /^(image|video)\//.test((f && f.type) || '') || VIDEO_EXT.test((f && f.name) || ''));
     if (!list.length) return 0;
 
     // آخر ترتيب مستعمل
@@ -116,12 +127,37 @@
     const records = [];
     for (const file of list) {
       try {
+        const media = mediaKind(file);
+
+        if (media === 'video') {
+          if (file.size > MAX_VIDEO_BYTES) {
+            console.warn('فيديو أكبر من الحد المسموح', file.name);
+            continue;
+          }
+          order += 1;
+          records.push({
+            id: uid(),
+            name: file.name || 'فيديو',
+            blob: file,
+            media: 'video',
+            mime: file.type || 'video/mp4',
+            width: 0,
+            height: 0,
+            bytes: file.size,
+            order,
+            addedAt: Date.now(),
+          });
+          continue;
+        }
+
         const prepared = await prepare(file);
         order += 1;
         records.push({
           id: uid(),
           name: file.name || 'إعلان',
           blob: prepared.blob,
+          media: 'image',
+          mime: 'image/jpeg',
           width: prepared.width,
           height: prepared.height,
           bytes: prepared.blob.size,
@@ -129,7 +165,7 @@
           addedAt: Date.now(),
         });
       } catch (e) {
-        console.warn('تعذّر تجهيز الصورة', file && file.name, e);
+        console.warn('تعذّر تجهيز الإعلان', file && file.name, e);
       }
     }
 
@@ -195,11 +231,14 @@
           const name = typeof item === 'string'
             ? src.split('/').pop()
             : (item.title || src.split('/').pop());
+          const declared = (typeof item === 'object' && item.type) || '';
+          const media = declared === 'video' || VIDEO_EXT.test(src) ? 'video' : 'image';
           return {
             id: 'file:' + src,
             name,
             src: new URL(src, document.baseURI).href,
             kind: 'file',
+            media,
             order: 100000 + index,
           };
         });

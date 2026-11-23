@@ -33,6 +33,7 @@
     adsMode: 'main',   // mixed | main | ads — يبدأ على الشاشة الأساسية حتى تُضاف إعلانات
     mainSec: 30,
     adSec: 20,
+    muteVideo: true,   // كتم صوت فيديوهات الإعلانات افتراضياً
   };
 
   const TIME_ZONE = 'Asia/Damascus';
@@ -49,6 +50,8 @@
   let adPreview = null;
   let currentView = 'board';
   let currentAdId = null;
+  let currentAdSrc = '';
+  let adFlip = true;
   let washFront = 0;
   let washToken = 0;
   let swapTimer = 0;
@@ -76,6 +79,7 @@
     if (!['mixed', 'main', 'ads'].includes(merged.adsMode)) merged.adsMode = DEFAULTS.adsMode;
     merged.mainSec = clampNumber(merged.mainSec, 5, 600, DEFAULTS.mainSec);
     merged.adSec = clampNumber(merged.adSec, 5, 600, DEFAULTS.adSec);
+    merged.muteVideo = merged.muteVideo !== false;
     return merged;
   }
 
@@ -160,11 +164,11 @@
 
   function humanDuration(sec) {
     const s = Math.max(0, Math.round(sec));
-    if (s < 3600) return d2(Math.floor(s / 60)) + ':' + d2(s % 60);
     const h = Math.floor(s / 3600);
     const m = Math.floor((s % 3600) / 60);
-    if (!m) return h + ' س';
-    return h + ' س ' + m + ' د';
+    const ss = s % 60;
+    if (h) return h + ':' + d2(m) + ':' + d2(ss);
+    return d2(m) + ':' + d2(ss);
   }
 
   /* ------------------------------------------------------------------ البيانات */
@@ -314,21 +318,15 @@
     }
 
     // سطر الصلاة القادمة على الشاشة الأساسية
+    const iqamaPhase = next.kind === 'iqama';
+    $('nextTag').textContent = iqamaPhase ? 'باقي للإقامة' : 'الصلاة القادمة';
     $('nextName').textContent = next.name;
-    $('nextTime').innerHTML = timeHTML(next.at);
-    $('countLabel').textContent = 'بعد';
-
-    const tags = document.querySelectorAll('.now__tag');
-    tags.forEach((el) => { el.textContent = next.kind === 'iqama' ? 'تُقام الصلاة' : 'الصلاة القادمة'; });
-
-    const showCount = next.left <= 3600;
-    $('nextCount').hidden = !showCount;
-    if (showCount) $('countValue').textContent = humanDuration(next.left);
+    $('countValue').textContent = humanDuration(next.left);
 
     // سطر شاشة الإعلان
-    $('adNextLabel').textContent = next.kind === 'iqama' ? 'تُقام الصلاة' : 'الصلاة القادمة';
+    $('adNextLabel').textContent = iqamaPhase ? 'باقي للإقامة' : 'الصلاة القادمة';
     $('adNextName').textContent = next.name;
-    $('adNextCount').textContent = 'بعد ' + humanDuration(next.left);
+    $('adNextCount').textContent = humanDuration(next.left);
   }
 
   function beat() {
@@ -379,6 +377,7 @@
     $('veilTitle').textContent = phase.name;
     document.body.classList.add('is-veiled');
     adPreview = null;
+    pauseAdMedia();
     resetRotation();
 
     if (!reducedMotion()) {
@@ -485,54 +484,176 @@
       adview.classList.remove('is-on');
       adview.setAttribute('aria-hidden', 'true');
       currentView = 'board';
+      pauseAdMedia();
     }
     if (instant) adview.style.transition = board.style.transition = 'none';
   }
 
-  function setWash(src) {
+  function setWash(ad) {
     const layers = [$('adwashA'), $('adwashB')];
     const next = layers[1 - washFront];
+    const prev = layers[washFront];
     const token = ++washToken;
+    const wantVideo = ad.media === 'video';
 
     const apply = () => {
       if (token !== washToken) return;
-      next.style.backgroundImage = 'url("' + src.replace(/"/g, '\\"') + '")';
+      const video = next.querySelector('.adwash__video');
+      if (wantVideo) {
+        next.style.backgroundImage = 'none';
+        playVideo(video, ad.src);
+      } else {
+        stopVideo(video);
+        next.style.backgroundImage = 'url("' + ad.src.replace(/"/g, '\\"') + '")';
+      }
       next.classList.add('is-on');
-      layers[washFront].classList.remove('is-on');
+      prev.classList.remove('is-on');
       washFront = 1 - washFront;
+
+      // جمّد فيديو الطبقة السابقة كي لا يتداخل صوته مع الجديد، ثم حرّر مصدره بعد التلاشي
+      const prevVideo = prev.querySelector('.adwash__video');
+      pauseVideo(prevVideo);
+      setTimeout(() => {
+        if (!prev.classList.contains('is-on')) stopVideo(prevVideo);
+      }, 1200);
     };
+
+    if (wantVideo) {
+      const incoming = next.querySelector('.adwash__video');
+      if (incoming.getAttribute('src') !== ad.src) incoming.src = ad.src;
+
+      if (incoming.readyState >= 2) { apply(); return; }
+
+      let done = false;
+      const go = () => {
+        if (done) return;
+        done = true;
+        incoming.removeEventListener('loadeddata', go);
+        apply();
+      };
+      incoming.addEventListener('loadeddata', go, { once: true });
+      setTimeout(go, 1400);
+      return;
+    }
 
     const img = new Image();
     img.onload = apply;
     img.onerror = apply;
-    img.src = src;
+    img.src = ad.src;
+  }
+
+  function playVideo(video, src) {
+    if (!video) return;
+    if (video.getAttribute('src') !== src) video.src = src;
+    video.muted = state.muteVideo !== false;
+    video.loop = true;
+    const started = video.play();
+    if (started && started.catch) {
+      started.catch(() => {
+        // المتصفح قد يمنع التشغيل غير المكتوم قبل تفاعل المستخدم — ارجع للكتم
+        if (!video.muted) {
+          video.muted = true;
+          const retry = video.play();
+          if (retry && retry.catch) retry.catch(() => {});
+        }
+      });
+    }
+  }
+
+  function stopVideo(video) {
+    if (!video) return;
+    try { video.pause(); } catch (e) { /* تجاهل */ }
+    if (video.getAttribute('src')) {
+      video.removeAttribute('src');
+      try { video.load(); } catch (e) { /* تجاهل */ }
+    }
+  }
+
+  function pauseVideo(video) {
+    if (!video || video.paused) return;
+    try { video.pause(); } catch (e) { /* تجاهل */ }
+  }
+
+  function pauseAdMedia() {
+    pauseVideo($('adVideo'));
+    document.querySelectorAll('.adwash__video').forEach(pauseVideo);
+  }
+
+  function resumeAdMedia() {
+    if (sheetOpen) return;
+    if (!$('adview').classList.contains('is-on')) return;
+    if (!$('veil').hidden) return;
+    const ad = ads.find((item) => item.id === currentAdId);
+    if (!ad || ad.media !== 'video') return;
+
+    playVideo($('adVideo'), ad.src);
+    const wash = document.querySelector('.adwash.is-on .adwash__video');
+    if (wash) playVideo(wash, ad.src);
+  }
+
+  function renderAdMedia(ad) {
+    const card = $('adcard');
+    const img = $('adImage');
+    const video = $('adVideo');
+    currentAdSrc = ad.src;
+
+    if (ad.media === 'video') {
+      img.hidden = true;
+      img.removeAttribute('src');
+      video.hidden = false;
+      video.loop = true;
+      video.setAttribute('aria-label', ad.name || 'إعلان');
+      card.classList.add('adcard--video');
+      playVideo(video, ad.src);
+      return;
+    }
+
+    stopVideo(video);
+    video.hidden = true;
+    img.hidden = false;
+    img.src = ad.src;
+    img.alt = ad.name || 'إعلان';
+    card.classList.remove('adcard--video');
   }
 
   function showAd(ad) {
     if (!ad) return;
-    if (currentAdId === ad.id && $('adImage').getAttribute('src') === ad.src) return;
+    if (currentAdId === ad.id && currentAdSrc === ad.src) {
+      resumeAdMedia();
+      return;
+    }
 
-    const isFirst = !$('adImage').getAttribute('src');
+    const isFirst = !currentAdSrc;
     currentAdId = ad.id;
-    setWash(ad.src);
+    setWash(ad);
 
     clearTimeout(swapTimer);
 
     if (isFirst) {
-      $('adImage').src = ad.src;
-      $('adImage').alt = ad.name || 'إعلان';
+      renderAdMedia(ad);
       return;
     }
 
     const card = $('adcard');
     const targetId = ad.id;
+
+    // اتجاه متبادل: تخرج الصورة للأعلى وتدخل التالية من الأسفل، ثم العكس — بإحساس إشعارات iOS
+    adFlip = !adFlip;
+    card.style.setProperty('--out-dy', adFlip ? 'calc(var(--u) * -26)' : 'calc(var(--u) * 26)');
+    card.style.setProperty('--in-dy', adFlip ? 'calc(var(--u) * 26)' : 'calc(var(--u) * -26)');
+
+    card.classList.remove('is-in');
     card.classList.add('is-out');
+
     swapTimer = setTimeout(() => {
       if (currentAdId !== targetId) return;
-      $('adImage').src = ad.src;
-      $('adImage').alt = ad.name || 'إعلان';
+      renderAdMedia(ad);
       card.classList.remove('is-out');
-    }, 420);
+      // إعادة تشغيل حركة الدخول
+      void card.offsetWidth;
+      card.classList.add('is-in');
+      swapTimer = setTimeout(() => card.classList.remove('is-in'), 680);
+    }, 430);
   }
 
   function applySlide(slide) {
@@ -542,6 +663,13 @@
     }
     if (currentView !== 'ad') setAdView(true);
     showAd(slide.ad);
+  }
+
+  function applyMute() {
+    const muted = state.muteVideo !== false;
+    document.querySelectorAll('#adVideo, .adwash__video').forEach((video) => {
+      video.muted = muted;
+    });
   }
 
   function urlFor(row) {
@@ -561,6 +689,7 @@
       id: row.id,
       name: row.name || 'إعلان',
       kind: 'local',
+      media: row.media === 'video' ? 'video' : 'image',
       order: row.order || index + 1,
       bytes: row.bytes || (row.blob ? row.blob.size : 0),
       src: urlFor(row),
@@ -579,8 +708,12 @@
 
     if (currentAdId && !ads.some((ad) => ad.id === currentAdId)) {
       currentAdId = null;
+      currentAdSrc = '';
+      pauseAdMedia();
       $('adImage').removeAttribute('src');
-      $('adcard').classList.remove('is-out');
+      stopVideo($('adVideo'));
+      $('adVideo').hidden = true;
+      $('adcard').classList.remove('is-out', 'is-in');
     }
 
     renderAdsList();
@@ -603,9 +736,14 @@
     const localCount = ads.filter((ad) => ad.kind === 'local').length;
 
     list.innerHTML = ads.map((ad, index) => {
+      const isVideo = ad.media === 'video';
+      const kindLabel = isVideo ? 'فيديو' : 'صورة';
       const meta = ad.kind === 'file'
-        ? 'من مجلد assets/ads'
-        : formatBytes(ad.bytes) + ' · محفوظ في هذا الجهاز';
+        ? kindLabel + ' · من مجلد assets/ads'
+        : kindLabel + ' · ' + formatBytes(ad.bytes) + ' · محفوظ في هذا الجهاز';
+      const thumb = isVideo
+        ? '<video class="aditem__thumb" src="' + escapeHTML(ad.src) + '#t=0.1" muted playsinline preload="metadata" aria-hidden="true"></video>'
+        : '<img class="aditem__thumb" src="' + escapeHTML(ad.src) + '" alt="">';
       const actions = ad.kind === 'file'
         ? '<span class="aditem__badge">من المجلد</span>'
         : '<button class="iconbtn" type="button" data-act="up" aria-label="تقديم ' + escapeHTML(ad.name) + '"' + (index === 0 ? ' disabled' : '') + '>' +
@@ -616,7 +754,7 @@
             '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></button>';
 
       return '<li class="aditem" data-id="' + escapeHTML(ad.id) + '" data-kind="' + ad.kind + '">' +
-        '<img class="aditem__thumb" src="' + escapeHTML(ad.src) + '" alt="">' +
+        thumb +
         '<span class="aditem__index">' + (index + 1) + '</span>' +
         '<span class="aditem__body">' +
           '<span class="aditem__name">' + escapeHTML(ad.name) + '</span>' +
@@ -673,7 +811,7 @@
     await refreshAds();
     paint();
     if (!added) {
-      $('adsHint').textContent = 'تعذّر إضافة الصور المختارة';
+      $('adsHint').textContent = 'تعذّر إضافة الملفات المختارة';
     }
   }
 
@@ -698,6 +836,7 @@
     $('optJumuah').value = state.jumuah || '';
     $('optMainSec').value = String(state.mainSec);
     $('optAdSec').value = String(state.adSec);
+    $('optMuteVideo').checked = state.muteVideo !== false;
 
     document.querySelectorAll('input[name="adMode"]').forEach((radio) => {
       radio.checked = radio.value === state.adsMode;
@@ -719,6 +858,7 @@
     sheetOpen = true;
     $('sheet').hidden = false;
     $('gear').setAttribute('aria-expanded', 'true');
+    pauseAdMedia();
     const first = $('iqamaGrid').querySelector('input');
     if (first) first.focus();
   }
@@ -729,6 +869,7 @@
     $('gear').setAttribute('aria-expanded', 'false');
     lastSlideKey = '';
     resetRotation();
+    paint();
     $('gear').focus();
   }
 
@@ -792,6 +933,12 @@
       save();
       resetRotation();
       changed();
+    });
+
+    $('optMuteVideo').addEventListener('change', (e) => {
+      state.muteVideo = e.target.checked;
+      save();
+      applyMute();
     });
 
     $('iqamaGrid').addEventListener('change', (e) => {

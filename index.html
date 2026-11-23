@@ -40,12 +40,10 @@
         <span class="clock__secs" dir="ltr"><span class="clock__colon" id="secColon">:</span><span id="seconds">--</span></span>
         <span class="clock__suffix" id="clockSuffix">م</span>
       </p>
-      <p class="now__meta">
-        <span class="now__tag">الصلاة القادمة</span>
+      <p class="now__next">
+        <span class="now__tag" id="nextTag">الصلاة القادمة</span>
         <span class="now__name" id="nextName">—</span>
-        <span class="now__separator" aria-hidden="true"></span>
-        <span class="now__time" id="nextTime">—</span>
-        <span class="now__count" id="nextCount" hidden><span class="now__count-label" id="countLabel">بعد</span><span class="now__count-value" id="countValue">--:--</span></span>
+        <span class="now__count"><span class="now__count-value" id="countValue">--:--</span></span>
       </p>
     </section>
   </div>
@@ -57,8 +55,8 @@
 
 <!-- ======================= شاشة الإعلان ======================= -->
 <section class="view view--ad" id="adview" aria-hidden="true">
-  <div class="adwash" id="adwashA" aria-hidden="true"></div>
-  <div class="adwash" id="adwashB" aria-hidden="true"></div>
+  <div class="adwash" id="adwashA" aria-hidden="true"><video class="adwash__video" muted loop playsinline preload="auto"></video></div>
+  <div class="adwash" id="adwashB" aria-hidden="true"><video class="adwash__video" muted loop playsinline preload="auto"></video></div>
   <div class="adtint" aria-hidden="true"></div>
 
   <div class="adlayout">
@@ -87,6 +85,7 @@
 
     <figure class="adcard" id="adcard">
       <img id="adImage" src="" alt="">
+      <video id="adVideo" muted loop playsinline preload="auto" hidden></video>
     </figure>
   </div>
 </section>
@@ -176,16 +175,19 @@
         <label class="field"><span>مدة الإعلان (ثانية)</span><input type="number" id="optAdSec" min="5" max="600" step="1" inputmode="numeric"></label>
       </div>
 
-      <h3 class="pane__title">صور الإعلانات</h3>
-      <p class="pane__hint">تُحفظ الصور داخل هذا المتصفح على جهاز العرض. يُفضّل أن تكون الصور عمودية (٣:٤ أو ٤:٥).</p>
+      <label class="opt opt--top"><span>كتم صوت فيديوهات الإعلانات</span><input type="checkbox" id="optMuteVideo"></label>
+      <p class="pane__hint">مفعّل افتراضياً: تُشغَّل الفيديوهات بصورة تلقائية بلا صوت. المتصفحات لا تسمح بالتشغيل التلقائي مع الصوت قبل تفاعل المستخدم.</p>
+
+      <h3 class="pane__title">صور وفيديوهات الإعلانات</h3>
+      <p class="pane__hint">تُحفظ الوسائط داخل هذا المتصفح على جهاز العرض. يُفضّل أن تكون الصور عمودية (٣:٤ أو ٤:٥)، والفيديو MP4 بترميز H.264.</p>
 
       <label class="dropzone" id="dropzone">
-        <input type="file" id="adFiles" accept="image/*" multiple class="dropzone__input" aria-label="اختيار صور الإعلانات">
+        <input type="file" id="adFiles" accept="image/*,video/mp4,video/webm,video/quicktime" multiple class="dropzone__input" aria-label="اختيار صور أو فيديوهات الإعلانات">
         <span class="dropzone__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
         </span>
-        <span class="dropzone__title">أضف صور الإعلانات</span>
-        <span class="dropzone__sub">اسحب الصور هنا أو اضغط للاختيار</span>
+        <span class="dropzone__title">أضف صور أو فيديوهات الإعلانات</span>
+        <span class="dropzone__sub">اسحب الملفات هنا أو اضغط للاختيار</span>
       </label>
 
       <div class="ads-toolbar">

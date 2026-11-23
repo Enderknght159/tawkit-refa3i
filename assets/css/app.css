@@ -120,7 +120,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: calc(var(--u) * 10);
+  gap: calc(var(--u) * 14);
   margin: 0;
   padding-top: calc(var(--u) * 10);
   text-align: left;
@@ -128,18 +128,18 @@ body {
 
 .date__hijri {
   display: inline-block;
-  padding: calc(var(--u) * 9) calc(var(--u) * 22);
+  padding: calc(var(--u) * 13) calc(var(--u) * 31);
   border-radius: 999px;
   background: var(--copper-deep);
   color: var(--paper);
   font-family: var(--font-display);
-  font-size: calc(var(--u) * 20);
+  font-size: calc(var(--u) * 28);
   line-height: 1.2;
   white-space: nowrap;
 }
 
 .date__greg {
-  font-size: calc(var(--u) * 17);
+  font-size: calc(var(--u) * 24);
   color: var(--ink-soft);
   white-space: nowrap;
 }
@@ -153,16 +153,19 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--u) * 22);
+  gap: calc(var(--u) * 30);
   padding-bottom: calc(var(--u) * 14);
 }
 
+/* شبكة ثلاثية متساوية الجانبين: تبقى الساعة في منتصف الشاشة تماماً
+   مهما اختلف عرض الثواني أو إشارة ص/م، وتبقى محاذاة القاعدة واحدة. */
 .clock {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: baseline;
-  justify-content: center;
-  gap: calc(var(--u) * 14);
+  width: 100%;
   margin: 0;
+  direction: ltr;
   font-family: var(--font-display);
   font-size: calc(var(--u) * 322);
   font-weight: 400;
@@ -173,9 +176,16 @@ body {
   white-space: nowrap;
 }
 
-.clock__main { display: inline-block; }
+.clock__main {
+  display: inline-block;
+  grid-column: 2;
+  justify-self: center;
+}
 
 .clock__suffix {
+  grid-column: 1;
+  justify-self: end;
+  margin-inline-end: calc(var(--u) * 18);
   font-family: var(--font-text);
   font-size: .1em;
   color: rgba(0, 104, 67, .78);
@@ -186,6 +196,9 @@ body {
 .clock__secs {
   display: inline-flex;
   align-items: baseline;
+  grid-column: 3;
+  justify-self: start;
+  margin-inline-start: calc(var(--u) * 14);
   font-family: var(--font-display);
   font-size: .15em;
   color: rgba(0, 104, 67, .55);
@@ -199,67 +212,60 @@ body {
   color: rgba(0, 104, 67, .3);
 }
 
-/* ---------- سطر الصلاة القادمة ---------- */
+/* ---------- شريط الصلاة القادمة (pill واحدة) ---------- */
 
-.now__meta {
-  display: flex;
-  align-items: baseline;
-  gap: calc(var(--u) * 14);
+.now__next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 28);
   margin: 0;
-  font-size: calc(var(--u) * 24);
-  color: var(--ink-soft);
+  padding: calc(var(--u) * 12) calc(var(--u) * 18);
+  border-radius: 999px;
+  background: rgba(255, 253, 247, .62);
+  border: 1px solid rgba(0, 104, 67, .14);
+  box-shadow:
+    0 calc(var(--u) * 14) calc(var(--u) * 40) rgba(0, 36, 23, .08),
+    inset 0 0 0 1px rgba(255, 255, 255, .4);
+  -webkit-backdrop-filter: blur(calc(var(--u) * 10));
+  backdrop-filter: blur(calc(var(--u) * 10));
   white-space: nowrap;
 }
 
 .now__tag {
-  padding: calc(var(--u) * 5) calc(var(--u) * 17);
+  padding: calc(var(--u) * 11) calc(var(--u) * 30) calc(var(--u) * 12);
   border-radius: 999px;
   background: var(--copper-deep);
   color: var(--paper);
-  font-size: calc(var(--u) * 16);
+  font-size: calc(var(--u) * 31);
+  line-height: 1.15;
 }
 
 .now__name {
+  min-width: calc(var(--u) * 160);
   font-family: var(--font-display);
-  font-size: calc(var(--u) * 38);
+  font-size: calc(var(--u) * 76);
+  line-height: 1;
   color: var(--green-deep);
+  text-align: center;
 }
-
-.now__separator {
-  width: calc(var(--u) * 5);
-  height: calc(var(--u) * 5);
-  border-radius: 50%;
-  background: rgba(0, 104, 67, .3);
-  align-self: center;
-}
-
-.now__time {
-  font-family: var(--font-display);
-  font-size: calc(var(--u) * 30);
-  color: var(--green);
-  font-variant-numeric: tabular-nums;
-}
-
-.now__time:empty { display: none; }
-.now__time .time-suffix { opacity: .55; }
 
 .now__count {
   display: inline-flex;
   align-items: baseline;
   gap: calc(var(--u) * 8);
-  padding: calc(var(--u) * 4) calc(var(--u) * 16) calc(var(--u) * 3);
+  min-width: calc(var(--u) * 196);
+  justify-content: center;
+  padding: calc(var(--u) * 10) calc(var(--u) * 26);
   border-radius: 999px;
   background: rgba(0, 128, 83, .1);
   color: var(--green-deep);
 }
 
-.now__count[hidden] { display: none; }
-
-.now__count-label { font-size: calc(var(--u) * 17); color: var(--green-soft); }
-
 .now__count-value {
   font-family: var(--font-display);
-  font-size: calc(var(--u) * 24);
+  font-size: calc(var(--u) * 48);
+  line-height: 1;
   direction: ltr;
   unicode-bidi: isolate;
   font-variant-numeric: tabular-nums;
@@ -387,6 +393,14 @@ body {
 }
 
 .adwash.is-on { opacity: 1; }
+
+.adwash__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .adtint {
   position: absolute;
@@ -546,28 +560,38 @@ body {
 /* ---------- سطر الصلاة القادمة ---------- */
 
 .adrail__next {
-  display: flex;
-  align-items: baseline;
-  gap: calc(var(--u) * 9);
-  margin: calc(var(--u) * 4) 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  margin: calc(var(--u) * 6) 0 0;
   padding: calc(var(--u) * 11) calc(var(--u) * 16);
-  border-radius: calc(var(--u) * 14);
+  border-radius: 999px;
   background: var(--green-deep);
   color: rgba(232, 225, 207, .72);
-  font-size: calc(var(--u) * 15);
   white-space: nowrap;
 }
 
+.adrail__next-label {
+  justify-self: start;
+  font-size: calc(var(--u) * 15);
+  line-height: 1.2;
+  color: rgba(232, 225, 207, .74);
+}
+
 .adrail__next-name {
+  justify-self: center;
   font-family: var(--font-display);
-  font-size: calc(var(--u) * 22);
+  font-size: calc(var(--u) * 26);
+  line-height: 1;
   color: var(--paper);
 }
 
 .adrail__next-count {
-  margin-inline-start: auto;
+  justify-self: end;
   font-family: var(--font-display);
-  font-size: calc(var(--u) * 21);
+  font-size: calc(var(--u) * 22);
+  line-height: 1;
   color: var(--cream);
   direction: ltr;
   unicode-bidi: isolate;
@@ -577,6 +601,8 @@ body {
 /* ---------- بطاقة الإعلان ---------- */
 
 .adcard {
+  --in-dy: calc(var(--u) * 26);
+  --out-dy: calc(var(--u) * -26);
   justify-self: center;
   align-self: center;
   margin: 0;
@@ -586,17 +612,35 @@ body {
   border-radius: calc(var(--u) * 34);
   background: #fbf8f1;
   box-shadow: 0 calc(var(--u) * 34) calc(var(--u) * 90) rgba(0, 20, 12, .46);
-  animation: cardIn 1s var(--ease) both;
-  transition: opacity .55s ease, transform .55s var(--ease);
+  transition:
+    opacity .42s ease-in-out,
+    transform .42s var(--ease),
+    filter .42s ease-in-out;
 }
 
-@keyframes cardIn {
-  from { opacity: 0; transform: scale(.965); }
+.adcard.is-out {
+  opacity: 0;
+  transform: translate3d(0, var(--out-dy), 0) scale(.985);
+  filter: blur(calc(var(--u) * 16));
 }
 
-.adcard.is-out { opacity: 0; transform: scale(.985); }
+.adcard.is-in { animation: adCardIn .62s var(--ease) both; }
 
-.adcard img {
+@keyframes adCardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--in-dy), 0) scale(.985);
+    filter: blur(calc(var(--u) * 16));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.adcard img,
+.adcard video {
   display: block;
   width: auto;
   height: auto;
@@ -607,6 +651,8 @@ body {
 }
 
 .adcard img:not([src]) { visibility: hidden; }
+
+.adcard [hidden] { display: none; }
 
 /* ==========================================================================
    شاشة الأذان / الإقامة
@@ -992,6 +1038,11 @@ body.is-veiled .gear { opacity: 0; pointer-events: none; }
 
 .opt:last-of-type { border-bottom: 0; }
 
+.opt--top {
+  margin-top: calc(var(--u) * 16);
+  border-bottom: 0;
+}
+
 .opt select, .opt input[type="time"] { width: auto; min-width: calc(var(--u) * 150); }
 
 .opt input[type="checkbox"] {
@@ -1264,15 +1315,17 @@ body.is-veiled .gear { opacity: 0; pointer-events: none; }
   .identity__name { font-size: calc(var(--u) * 34); white-space: normal; }
   .identity__sub { font-size: calc(var(--u) * 17); }
   .date { padding-top: calc(var(--u) * 4); }
-  .date__hijri { font-size: calc(var(--u) * 15); padding: calc(var(--u) * 7) calc(var(--u) * 14); }
+  .date__hijri { font-size: calc(var(--u) * 21); padding: calc(var(--u) * 10) calc(var(--u) * 20); }
   .date__greg { display: none; }
 
-  .now { gap: calc(var(--u) * 16); }
+  .now { gap: calc(var(--u) * 18); }
   .clock { font-size: calc(var(--u) * 214); }
   .clock__secs { font-size: .17em; }
-  .now__meta { flex-wrap: wrap; justify-content: center; font-size: calc(var(--u) * 20); }
-  .now__name { font-size: calc(var(--u) * 32); }
-  .now__time { font-size: calc(var(--u) * 26); }
+  .now__next { gap: calc(var(--u) * 16); padding: calc(var(--u) * 8) calc(var(--u) * 10); }
+  .now__tag { font-size: calc(var(--u) * 22); padding: calc(var(--u) * 8) calc(var(--u) * 18) calc(var(--u) * 9); }
+  .now__name { min-width: calc(var(--u) * 110); font-size: calc(var(--u) * 54); }
+  .now__count { min-width: calc(var(--u) * 140); padding: calc(var(--u) * 8) calc(var(--u) * 16); }
+  .now__count-value { font-size: calc(var(--u) * 34); }
 
   .band { padding: calc(var(--u) * 26) calc(var(--u) * 30) calc(var(--u) * 26); border-radius: calc(var(--u) * 44) calc(var(--u) * 44) 0 0; }
   .times { grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 8); }
@@ -1308,12 +1361,14 @@ body.is-veiled .gear { opacity: 0; pointer-events: none; }
   .arow__name { font-size: calc(var(--u) * 14); }
   .arow__adhan { font-size: calc(var(--u) * 21); }
   .arow__iqama { display: none; }
-  .adrail__next { font-size: calc(var(--u) * 12); padding: calc(var(--u) * 8) calc(var(--u) * 12); }
-  .adrail__next-name { font-size: calc(var(--u) * 17); }
-  .adrail__next-count { font-size: calc(var(--u) * 16); }
+  .adrail__next { padding: calc(var(--u) * 8) calc(var(--u) * 12); gap: calc(var(--u) * 8); }
+  .adrail__next-label { font-size: calc(var(--u) * 13); }
+  .adrail__next-name { font-size: calc(var(--u) * 20); }
+  .adrail__next-count { font-size: calc(var(--u) * 17); }
 
   .adcard { padding: calc(var(--u) * 9); border-radius: calc(var(--u) * 22); min-height: 0; }
-  .adcard img { max-height: calc(100dvh - var(--u) * 480); border-radius: calc(var(--u) * 14); }
+  .adcard img,
+  .adcard video { max-height: calc(100dvh - var(--u) * 480); border-radius: calc(var(--u) * 14); }
 
   .veil__arch { width: calc(var(--u) * 420); height: calc(var(--u) * 546); }
   .veil__eyebrow { font-size: calc(var(--u) * 24); }
@@ -1342,7 +1397,11 @@ body.is-veiled .gear { opacity: 0; pointer-events: none; }
 
   .clock { font-size: calc(var(--u) * 150); }
   .clock__secs { display: none; }
-  .now__tag { display: none; }
+  .now__next { gap: calc(var(--u) * 9); padding: calc(var(--u) * 6) calc(var(--u) * 8); }
+  .now__tag { font-size: calc(var(--u) * 18); padding: calc(var(--u) * 6) calc(var(--u) * 13) calc(var(--u) * 7); }
+  .now__name { min-width: calc(var(--u) * 76); font-size: calc(var(--u) * 38); }
+  .now__count { min-width: calc(var(--u) * 100); padding: calc(var(--u) * 6) calc(var(--u) * 12); }
+  .now__count-value { font-size: calc(var(--u) * 26); }
 
   .times { grid-template-columns: repeat(3, 1fr); }
   .tcell__name { font-size: calc(var(--u) * 18); }
@@ -1353,7 +1412,8 @@ body.is-veiled .gear { opacity: 0; pointer-events: none; }
   .adrail__brand span { display: none; }
   .adrail__clock { font-size: calc(var(--u) * 48); }
   .adrail__times { grid-template-columns: repeat(3, 1fr); }
-  .adcard img { max-height: calc(100dvh - var(--u) * 320); }
+  .adcard img,
+  .adcard video { max-height: calc(100dvh - var(--u) * 320); }
 
   .iq-grid { grid-template-columns: repeat(3, 1fr); }
   .durations { grid-template-columns: 1fr; }
