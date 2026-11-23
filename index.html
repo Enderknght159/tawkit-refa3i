@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#006843">
+<title>مواقيت الصلاة · جامع الشيخ عبد الكريم الرفاعي</title>
+<meta name="description" content="مواقيت الصلاة والإقامة في جامع الشيخ عبد الكريم الرفاعي — دمشق">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/brand.css">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+
+<!-- الأرضية: خلفية الجامع الكريميّة -->
+<div class="ground" aria-hidden="true">
+  <div class="ground__img"></div>
+</div>
+
+<!-- ======================= الشاشة الأساسية ======================= -->
+<main class="view view--board is-on" id="board">
+  <div class="board">
+    <header class="masthead">
+      <div class="identity">
+        <img class="identity__logo" src="assets/img/logo-color.png" alt="" width="201" height="229">
+        <div class="identity__text">
+          <h1 class="identity__name">جامع الشيخ عبد الكريم الرفاعي</h1>
+          <p class="identity__sub">دمشق · مواقيت الصلاة والإقامة</p>
+        </div>
+      </div>
+      <p class="date">
+        <span class="date__hijri" id="dateHijri">—</span>
+        <span class="date__greg" id="dateGreg">—</span>
+      </p>
+    </header>
+
+    <section class="now">
+      <p class="clock">
+        <span class="clock__main" id="clock">--:--</span>
+        <span class="clock__secs" dir="ltr"><span class="clock__colon" id="secColon">:</span><span id="seconds">--</span></span>
+        <span class="clock__suffix" id="clockSuffix">م</span>
+      </p>
+      <p class="now__meta">
+        <span class="now__tag">الصلاة القادمة</span>
+        <span class="now__name" id="nextName">—</span>
+        <span class="now__separator" aria-hidden="true"></span>
+        <span class="now__time" id="nextTime">—</span>
+        <span class="now__count" id="nextCount" hidden><span class="now__count-label" id="countLabel">بعد</span><span class="now__count-value" id="countValue">--:--</span></span>
+      </p>
+    </section>
+  </div>
+
+  <section class="band">
+    <ol class="times" id="schedule" aria-label="مواقيت الصلوات"></ol>
+  </section>
+</main>
+
+<!-- ======================= شاشة الإعلان ======================= -->
+<section class="view view--ad" id="adview" aria-hidden="true">
+  <div class="adwash" id="adwashA" aria-hidden="true"></div>
+  <div class="adwash" id="adwashB" aria-hidden="true"></div>
+  <div class="adtint" aria-hidden="true"></div>
+
+  <div class="adlayout">
+    <aside class="adrail">
+      <div class="adrail__brand">
+        <img src="assets/img/logo-color.png" alt="" width="201" height="229">
+        <div>
+          <b>جامع الشيخ عبد الكريم الرفاعي</b>
+          <span>دمشق · مواقيت الصلاة</span>
+        </div>
+      </div>
+
+      <p class="adrail__clock">
+        <span id="adClock">--:--</span><span class="adrail__suffix" id="adSuffix">م</span>
+      </p>
+      <p class="adrail__date" id="adDate">—</p>
+
+      <ol class="adrail__times" id="adSchedule"></ol>
+
+      <p class="adrail__next" id="adNext">
+        <span class="adrail__next-label" id="adNextLabel">الصلاة القادمة</span>
+        <span class="adrail__next-name" id="adNextName">—</span>
+        <span class="adrail__next-count" id="adNextCount">—</span>
+      </p>
+    </aside>
+
+    <figure class="adcard" id="adcard">
+      <img id="adImage" src="" alt="">
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= شاشة الأذان / الإقامة ======================= -->
+<div class="veil" id="veil" hidden aria-live="polite">
+  <div class="veil__wash" aria-hidden="true"></div>
+  <div class="veil__shade" aria-hidden="true"></div>
+  <button class="veil__exit" id="veilExit" type="button" hidden>إنهاء المعاينة</button>
+
+  <div class="veil__core" id="veilCore">
+    <svg class="veil__arch" viewBox="0 0 400 520" aria-hidden="true">
+      <path d="M20 500V210C20 110 100 30 200 30s180 80 180 180v290" />
+    </svg>
+    <p class="veil__eyebrow" id="veilEyebrow">حان وقت الأذان</p>
+    <p class="veil__title" id="veilTitle">—</p>
+
+    <div class="veil__mobile" id="veilMobile">
+      <svg class="veil__sign" viewBox="0 0 120 120" aria-hidden="true">
+        <rect x="37" y="16" width="46" height="88" rx="11"/>
+        <path d="M52 25h16"/>
+        <circle cx="60" cy="94" r="2"/>
+        <path class="veil__slash-halo" d="M22 98 98 22"/>
+        <path class="veil__slash" d="M22 98 98 22"/>
+      </svg>
+      <p class="veil__note">يرجى إغلاق الجوال</p>
+    </div>
+
+    <p class="veil__clock"><span id="veilClock">--:--</span><span class="veil__suffix" id="veilSuffix">م</span></p>
+  </div>
+</div>
+
+<!-- ======================= زر الإعدادات ======================= -->
+<button class="gear" id="gear" type="button" aria-label="الإعدادات" aria-expanded="false">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.9 1.9M16.6 16.6l1.9 1.9M18.5 5.5l-1.9 1.9M7.4 16.6l-1.9 1.9"/></svg>
+</button>
+
+<!-- ======================= لوحة الإعدادات ======================= -->
+<div class="sheet" id="sheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+    <div class="panel__top">
+      <header class="panel__head">
+        <h2 id="panelTitle">الإعدادات</h2>
+        <button class="panel__x" id="closeSheet" type="button" aria-label="إغلاق">×</button>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="أقسام الإعدادات">
+        <button class="tab is-on" id="tabTimes" role="tab" aria-selected="true" aria-controls="paneTimes" type="button">المواقيت</button>
+        <button class="tab" id="tabAds" role="tab" aria-selected="false" aria-controls="paneAds" type="button">الإعلانات<span class="tab__count" id="adsCount">٠</span></button>
+        <button class="tab" id="tabDisplay" role="tab" aria-selected="false" aria-controls="paneDisplay" type="button">العرض</button>
+      </nav>
+    </div>
+
+    <!-- المواقيت -->
+    <section class="pane is-on" id="paneTimes" role="tabpanel" aria-labelledby="tabTimes">
+      <h3 class="pane__title">الإقامة بعد الأذان</h3>
+      <p class="pane__hint">الدقائق المضافة على وقت الأذان لكل صلاة.</p>
+      <div class="iq-grid" id="iqamaGrid"></div>
+
+      <h3 class="pane__title">الوقت والتاريخ</h3>
+      <label class="opt"><span>نظام ٢٤ ساعة</span><input type="checkbox" id="opt24"></label>
+      <label class="opt"><span>إظهار إشارة ص/م</span><input type="checkbox" id="optSuffix"></label>
+      <label class="opt"><span>تصحيح التاريخ الهجري</span>
+        <select id="optHijri">
+          <option value="-2">−٢ يوم</option>
+          <option value="-1">−١ يوم</option>
+          <option value="0">٠</option>
+          <option value="1">+١ يوم</option>
+          <option value="2">+٢ يوم</option>
+        </select>
+      </label>
+      <label class="opt"><span>الجمعة (وقت الخطبة، اختياري)</span><input type="time" id="optJumuah"></label>
+    </section>
+
+    <!-- الإعلانات -->
+    <section class="pane" id="paneAds" role="tabpanel" aria-labelledby="tabAds" hidden>
+      <h3 class="pane__title">طريقة العرض</h3>
+      <div class="seg" role="radiogroup" aria-label="طريقة عرض الإعلانات">
+        <label class="seg__item"><input type="radio" name="adMode" value="mixed"><span>مختلط</span></label>
+        <label class="seg__item"><input type="radio" name="adMode" value="main"><span>الشاشة الأساسية فقط</span></label>
+        <label class="seg__item"><input type="radio" name="adMode" value="ads"><span>الإعلانات فقط</span></label>
+      </div>
+      <p class="pane__hint">مختلط: الشاشة الأساسية ثم إعلان ثم الشاشة الأساسية… — الإعلانات فقط: تتناوب الإعلانات وحدها.</p>
+
+      <div class="durations">
+        <label class="field"><span>مدة الشاشة الأساسية (ثانية)</span><input type="number" id="optMainSec" min="5" max="600" step="1" inputmode="numeric"></label>
+        <label class="field"><span>مدة الإعلان (ثانية)</span><input type="number" id="optAdSec" min="5" max="600" step="1" inputmode="numeric"></label>
+      </div>
+
+      <h3 class="pane__title">صور الإعلانات</h3>
+      <p class="pane__hint">تُحفظ الصور داخل هذا المتصفح على جهاز العرض. يُفضّل أن تكون الصور عمودية (٣:٤ أو ٤:٥).</p>
+
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="adFiles" accept="image/*" multiple class="dropzone__input" aria-label="اختيار صور الإعلانات">
+        <span class="dropzone__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        </span>
+        <span class="dropzone__title">أضف صور الإعلانات</span>
+        <span class="dropzone__sub">اسحب الصور هنا أو اضغط للاختيار</span>
+      </label>
+
+      <div class="ads-toolbar">
+        <button class="btn btn--ghost btn--small" id="previewAd" type="button">معاينة شاشة الإعلان</button>
+        <span class="ads-empty" id="adsHint">لا إعلانات بعد</span>
+      </div>
+
+      <ul class="ads-list" id="adsList"></ul>
+    </section>
+
+    <!-- العرض -->
+    <section class="pane" id="paneDisplay" role="tabpanel" aria-labelledby="tabDisplay" hidden>
+      <h3 class="pane__title">معاينة الشاشات</h3>
+      <p class="pane__hint">تظهر المعاينة ٢٠ ثانية ثم تعود الشاشة للعمل الطبيعي.</p>
+      <div class="panel__preview">
+        <button class="btn btn--ghost" id="previewAdhan" type="button">شاشة الأذان</button>
+        <button class="btn btn--ghost" id="previewIqama" type="button">شاشة الإقامة</button>
+        <button class="btn btn--ghost" id="previewAdScreen" type="button">شاشة الإعلان</button>
+      </div>
+
+      <h3 class="pane__title">الشاشة</h3>
+      <div class="panel__preview">
+        <button class="btn" id="btnFull" type="button">ملء الشاشة</button>
+        <button class="btn btn--ghost" id="btnReset" type="button">استعادة الافتراضي</button>
+      </div>
+      <p class="pane__hint">اختصارات: <b>S</b> للإعدادات · <b>F</b> لملء الشاشة · <b>Esc</b> للإغلاق.</p>
+    </section>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

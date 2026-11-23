@@ -1,0 +1,7 @@
+{
+  "ads": [
+    { "src": "assets/ads/sample-eid.jpg", "title": "نموذج — صلاة العيد" },
+    { "src": "assets/ads/sample-lesson.jpg", "title": "نموذج — درس النحو" },
+    { "src": "assets/ads/sample-course.jpg", "title": "نموذج — الدورة الصيفية" }
+  ]
+}

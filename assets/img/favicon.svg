@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="جامع الشيخ عبد الكريم الرفاعي">
+  <rect width="64" height="64" rx="14" fill="#006843"/>
+  <path d="M16 51V32c0-9.4 7.2-17 16-17s16 7.6 16 17v19" fill="none" stroke="#e8e1cf" stroke-width="3"/>
+  <path d="M32 15v-7" stroke="#c9ab5f" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="41" r="2.4" fill="#c9ab5f"/>
+</svg>

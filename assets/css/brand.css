@@ -1,0 +1,94 @@
+/* ==========================================================================
+   هوية جامع الشيخ عبد الكريم الرفاعي — brand.css
+   الألوان والخطوط والمكوّنات الأساسية. القيم كلها عبر المتغيّرات في :root.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Hacen Algeria";
+  font-display: swap;
+  src: local("Hacen Algeria"),
+       url("../fonts/HacenAlgeria.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Hacen Algeria HD";
+  font-display: swap;
+  src: local("Hacen Algeria HD"),
+       url("../fonts/HacenAlgeriaHD.ttf") format("truetype");
+}
+
+:root {
+  /* الأخضر */
+  --green: #008053;        /* أخضر الشعار — اللون الأساسي */
+  --green-deep: #006843;   /* نصوص العناوين على الكريمي، أشرطة سفلية */
+  --green-poster: #007d4e; /* مساحات الأخضر الكبيرة في البوستات */
+  --green-mid: #157d57;    /* خلفية بوست المناسبات */
+  --green-glow: #00a068;   /* أفتح نقطة في التدرّج */
+  /* الذهبي والنحاسي */
+  --gold: #c9ab5f;         /* الأيقونات، الخطوط، أزرار الكتب */
+  --copper: #c18b47;       /* وسوم التاريخ والتنبيهات (pill) */
+  /* الكريمي */
+  --cream: #e8e1cf;        /* خلفية البوستات الفاتحة */
+  --cream-soft: #f4efe9;   /* بطاقات وصناديق على الكريمي */
+  --cream-eid: #eeedc0;    /* خلفية التهاني والأعياد */
+  --paper: #ffffff;
+  /* الداكن */
+  --night: #040806;        /* بوستات الليل والقيام */
+  --ink: #25221a;          /* نص داكن على الفاتح */
+  --grey: #524e4e;         /* نهاية التدرّج السفلي */
+
+  --grad-occasion: linear-gradient(180deg, var(--green-glow) 0%, var(--green-mid) 45%, var(--grey) 100%);
+  --grad-night: radial-gradient(60% 50% at 20% 55%, rgba(0, 160, 104, .55), transparent 70%), var(--night);
+
+  --font-display: "Hacen Algeria HD", "Hacen Algeria", "Noto Kufi Arabic", Tahoma, sans-serif;
+  --font-text: "Hacen Algeria", "Hacen Algeria HD", "Noto Kufi Arabic", Tahoma, sans-serif;
+
+  --fs-display: clamp(2.8rem, 7vw, 5rem);
+  --fs-title: clamp(1.8rem, 4vw, 2.8rem);
+  --fs-sub: 1.5rem;
+  --fs-body: 1.125rem;
+  --fs-small: .875rem;
+
+  --r-pill: 999px;
+  --r-card: 24px;
+  --r-panel: 44px;
+  --s1: .5rem;
+  --s2: 1rem;
+  --s3: 1.5rem;
+  --s4: 2.5rem;
+  --s5: 4rem;
+}
+
+.brand { font-family: var(--font-text); color: var(--ink); line-height: 1.8; direction: rtl; }
+.brand h1, .brand h2, .brand h3, .t-display, .t-title { font-family: var(--font-display); font-weight: 400; line-height: 1.3; margin: 0; }
+.t-display { font-size: var(--fs-display); color: var(--green); }
+.t-title { font-size: var(--fs-title); color: var(--green-deep); }
+.t-sub { font-family: var(--font-display); font-size: var(--fs-sub); color: var(--gold); }
+.t-body { font-size: var(--fs-body); }
+.t-small { font-size: var(--fs-small); }
+.on-dark { color: var(--paper); }
+
+/* الوسوم: pill نحاسي أو ذهبي */
+.tag { display: inline-block; padding: .15em .9em; border-radius: var(--r-pill); background: var(--copper); color: var(--paper); font-family: var(--font-display); font-size: var(--fs-small); }
+.tag--gold { background: var(--gold); }
+.tag--white { background: var(--paper); color: var(--gold); }
+
+/* صندوق زجاجي: على الصور والخلفيات الداكنة */
+.glass { padding: var(--s2) var(--s3); border-radius: var(--r-card); border: 1px solid rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .14); backdrop-filter: blur(10px); color: var(--paper); }
+/* صندوق فاتح: على الكريمي */
+.card { padding: var(--s2) var(--s3); border-radius: var(--r-card); background: var(--cream-soft); border: 1px solid rgba(0, 104, 67, .2); color: var(--green-deep); }
+
+/* صف معلومة: أيقونة + نص */
+.info { display: flex; align-items: center; gap: var(--s2); }
+.info__icon { width: 3rem; height: 3rem; flex: none; border-radius: 14px; background: var(--paper); color: var(--gold); display: grid; place-items: center; font-size: 1.4rem; }
+
+/* شريط أخضر سفلي بزاوية مستديرة */
+.band { background: var(--green-poster); color: var(--paper); padding: var(--s3) var(--s4); border-radius: var(--r-panel) var(--r-panel) 0 0; }
+.btn { display: inline-block; padding: .6em 1.6em; border-radius: var(--r-pill); background: var(--paper); color: var(--green-deep); font-family: var(--font-display); text-decoration: none; border: 0; }
+.btn--green { background: var(--green); color: var(--paper); }
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+/* قياسات البوست */
+.poster { aspect-ratio: 3 / 4; border-radius: var(--r-card); overflow: hidden; position: relative; background: var(--cream) url("../img/bg-haze-960.jpg") center / cover; }
+.poster--green { background: var(--grad-occasion); color: var(--paper); }
+.poster--night { background: var(--grad-night); color: var(--paper); }
+.poster--square { aspect-ratio: 4 / 5; }
