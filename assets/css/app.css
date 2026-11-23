@@ -112,7 +112,7 @@ body {
 .identity__sub {
   margin: calc(var(--u) * 5) 0 0;
   font-size: calc(var(--u) * 21);
-  color: var(--green-soft);
+  color: rgba(0, 104, 67, .74);
   white-space: nowrap;
 }
 
@@ -130,7 +130,7 @@ body {
   display: inline-block;
   padding: calc(var(--u) * 9) calc(var(--u) * 22);
   border-radius: 999px;
-  background: var(--copper);
+  background: var(--copper-deep);
   color: var(--paper);
   font-family: var(--font-display);
   font-size: calc(var(--u) * 20);
@@ -168,7 +168,7 @@ body {
   font-weight: 400;
   line-height: .9;
   letter-spacing: -.015em;
-  color: var(--green-deep);
+  color: var(--green);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -214,7 +214,7 @@ body {
 .now__tag {
   padding: calc(var(--u) * 5) calc(var(--u) * 17);
   border-radius: 999px;
-  background: var(--copper);
+  background: var(--copper-deep);
   color: var(--paper);
   font-size: calc(var(--u) * 16);
 }
@@ -241,6 +241,7 @@ body {
 }
 
 .now__time:empty { display: none; }
+.now__time .time-suffix { opacity: .55; }
 
 .now__count {
   display: inline-flex;
@@ -303,7 +304,7 @@ body {
 .tcell__name {
   font-size: calc(var(--u) * 29);
   line-height: 1.2;
-  color: rgba(232, 225, 207, .68);
+  color: rgba(232, 225, 207, .94);
   white-space: nowrap;
 }
 
@@ -314,7 +315,7 @@ body {
   font-size: .34em;
   font-weight: 400;
   line-height: 1;
-  opacity: .8;
+  opacity: 1;
   white-space: nowrap;
 }
 
@@ -330,7 +331,7 @@ body {
   white-space: nowrap;
 }
 
-.tcell__adhan .time-suffix { font-size: .3em; color: rgba(232, 225, 207, .58); }
+.tcell__adhan .time-suffix { font-size: .3em; color: rgba(232, 225, 207, .95); }
 
 .tcell__iqama {
   display: inline-flex;
@@ -339,7 +340,7 @@ body {
   font-family: var(--font-display);
   font-size: calc(var(--u) * 25);
   line-height: 1;
-  color: rgba(201, 171, 95, .92);
+  color: #e8d49c;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -347,10 +348,10 @@ body {
 .tcell__iqama .key {
   font-family: var(--font-text);
   font-size: calc(var(--u) * 13);
-  color: rgba(232, 225, 207, .42);
+  color: rgba(232, 225, 207, .8);
 }
 
-.tcell__iqama .time-suffix { font-size: .46em; color: rgba(201, 171, 95, .7); }
+.tcell__iqama .time-suffix { font-size: .46em; color: rgba(232, 225, 207, .95); }
 
 .tcell__iqama .none { color: rgba(232, 225, 207, .3); }
 
@@ -362,11 +363,12 @@ body {
   box-shadow: 0 calc(var(--u) * 16) calc(var(--u) * 42) rgba(0, 28, 18, .28);
 }
 
-.tcell--next .tcell__name { color: var(--green-soft); }
+.tcell--next .tcell__name { color: rgba(0, 104, 67, .9); }
 .tcell--next .tcell__adhan { color: var(--green-deep); }
-.tcell--next .tcell__adhan .time-suffix { color: var(--green-soft); }
-.tcell--next .tcell__iqama { color: var(--gold); }
-.tcell--next .tcell__iqama .key { color: rgba(0, 104, 67, .5); }
+.tcell--next .tcell__adhan .time-suffix { color: rgba(0, 104, 67, .8); }
+.tcell--next .tcell__iqama { color: #7d5d15; }
+.tcell--next .tcell__iqama .key { color: rgba(0, 104, 67, .8); }
+.tcell--next .tcell__iqama .time-suffix { color: #7d5d15; }
 
 /* ==========================================================================
    شاشة الإعلان — طبقتان: صورة مموّهة تملأ الشاشة، وبطاقة صغيرة مع لوحة المعلومات
@@ -520,7 +522,7 @@ body {
   min-width: calc(var(--u) * 66);
   font-family: var(--font-display);
   font-size: calc(var(--u) * 19);
-  color: #9b7726;
+  color: #8a6a20;
   text-align: left;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -862,6 +864,16 @@ body.is-veiled .gear { opacity: 0; pointer-events: none; }
 }
 
 .panel__x:hover { background: rgba(0, 104, 67, .16); }
+
+.gear:focus-visible,
+.tab:focus-visible,
+.iconbtn:focus-visible,
+.panel__x:focus-visible,
+.veil__exit:focus-visible,
+.dropzone:focus-within {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
 
 /* ---------- التبويبات ---------- */
 

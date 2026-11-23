@@ -30,7 +30,7 @@
     hijriOffset: 0,
     iqama: { fajr: 20, dhuhr: 20, asr: 20, maghrib: 10, isha: 10 },
     jumuah: '',
-    adsMode: 'mixed',   // mixed | main | ads
+    adsMode: 'main',   // mixed | main | ads — يبدأ على الشاشة الأساسية حتى تُضاف إعلانات
     mainSec: 30,
     adSec: 20,
   };
@@ -525,8 +525,10 @@
     }
 
     const card = $('adcard');
+    const targetId = ad.id;
     card.classList.add('is-out');
     swapTimer = setTimeout(() => {
+      if (currentAdId !== targetId) return;
       $('adImage').src = ad.src;
       $('adImage').alt = ad.name || 'إعلان';
       card.classList.remove('is-out');
